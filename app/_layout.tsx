@@ -1,8 +1,9 @@
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { queryClient, persister } from '@/utils/queryClient';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -10,14 +11,12 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const queryClient = new QueryClient()
-
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack screenOptions={{headerShown: false}}/> 
         <StatusBar style="auto" />
       </ThemeProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

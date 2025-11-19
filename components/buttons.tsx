@@ -1,4 +1,4 @@
-import { StyleSheet, Pressable, Text, TouchableOpacity, View } from "react-native"
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { IconSymbol } from "./ui/icon-symbol.ios"
 
 interface StandardButtonProps{
@@ -6,6 +6,7 @@ interface StandardButtonProps{
     onPress: () => void,
     isDanger?: boolean,  
 }
+
 type ListButton= {
     onPress: () => void
 }

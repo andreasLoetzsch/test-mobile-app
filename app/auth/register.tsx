@@ -4,24 +4,24 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-const LoginScreen = ()=> {
-  const router = useRouter()
+const RegisterScreen = ()=> {
+  const router = useRouter()  
   const {mutate} = queries.useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const handleSubmit = async () => {
-    mutate({username, password, register: false})
+    mutate({username, password, register: true})
   }
-  const handleToRegister = () => {
-    router.replace('/auth/register')
+  const handleToLogin = () => {
+    router.replace('/auth/login')
   }
   return (
         <View style={styles.loginContainer}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>Register</Text>
              <TextInput onChangeText={setUsername} value={username} placeholder={'Username'}/>
              <TextInput secureTextEntry={true} onChangeText={setPassword} value={password} placeholder={'Password'}/>
-             <StandardButton title="Login" onPress={handleSubmit}/>
-             <Text style={styles.changeToRegisterButton} onPress={handleToRegister} >Dont't have an account? Press here to register</Text>
+             <StandardButton title="Register" onPress={handleSubmit}/>
+             <Text onPress={handleToLogin}>Back to login</Text>
         </View> 
 )
 
@@ -51,9 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
-  changeToRegisterButton: {
-
-  },
 });
 
-export default LoginScreen
+export default RegisterScreen

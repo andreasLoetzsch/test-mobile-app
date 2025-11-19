@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { AddListButton, RemoveListItemButton, StandardButton } from '@/components/buttons';
 import { TodoAddTaskModal } from '@/components/todoAddTaskModal';
-import uuid from 'react-native-uuid'
+import { useState } from 'react';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import uuid from 'react-native-uuid';
 
 export default function ToDoScreen() {
   const [tasks, setTasks] = useState<{id: string; text: string}[]>([])

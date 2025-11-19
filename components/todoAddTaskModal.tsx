@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {Modal, TouchableOpacity, TextInput, Text, StyleSheet} from 'react-native'
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 
 type TodoModalProps = {
     visible: boolean,
