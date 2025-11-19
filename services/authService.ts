@@ -30,7 +30,7 @@ export const registerUser = async (username: string, password: string) => {
     try{
         const user = { username, password } 
         await AsyncStorage.setItem(`user:${username}`, JSON.stringify(user))
-        console.log({user}, 'register')
+        await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true))
         return user
     }catch(err){
         console.error(err)
@@ -39,5 +39,19 @@ export const registerUser = async (username: string, password: string) => {
 }
 
 export const isUserLoggedIn = async () => {
-    
+    try{
+        const loggedInStatus = await AsyncStorage.getItem('isLoggedIn')
+        if(!loggedInStatus){
+            throw new Error('couldnt find isLoggedIn')
+        }
+        const loggedInStatusParsed = JSON.parse(loggedInStatus)
+        console.log(loggedInStatusParsed, 'in user. is logged in')
+        if(loggedInStatusParsed == false){
+            throw new Error('User not logged in')
+        }
+        return loggedInStatusParsed
+    }catch(err){
+        console.error(err)
+        throw err
+    }
 }

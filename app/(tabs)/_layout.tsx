@@ -1,14 +1,20 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
 import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { queries } from '@/hooks/quries'; 
+import { useEffect } from 'react';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  
+  const {mutate} = queries.useAuthStatus()
+  useEffect(() => {
+    mutate();
+  }, []);
+
   return (
     <Tabs
       screenOptions={{

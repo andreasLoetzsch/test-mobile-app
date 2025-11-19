@@ -1,4 +1,4 @@
-import { logInUser, registerUser } from "@/services/authService";
+import { logInUser, registerUser, isUserLoggedIn } from "@/services/authService";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 
@@ -21,14 +21,20 @@ const useAuth = () =>  {
     })
 }
 const useAuthStatus = () => {
-    return useQuery({
-        queryKey: ['authStatus'],
-        queryFn: () => {
-           // return isUserLoggedIn()
+    const router = useRouter()
+    return useMutation({
+        mutationFn: () => {
+            return isUserLoggedIn()
+        },
+        onSuccess: () =>  {
+            router.replace('/')
+        },
+        onError: () => {
+            router.replace('/auth/login')
         }
     })
 }
 export const authQueries = {
     useAuth,
-    useAuthStatus
+    useAuthStatus,
 }
