@@ -1,33 +1,46 @@
 import { AddListButton, RemoveListItemButton, StandardButton } from '@/components/buttons';
 import { TodoAddTaskModal } from '@/components/todoAddTaskModal';
+import { queries } from '@/hooks/quries';
+import { userTable } from '@/schemas/schemas';
+import { db } from '@/utils/sqLiteConfig';
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
-import uuid from 'react-native-uuid';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+
 
 export default function ToDoScreen() {
-  const [tasks, setTasks] = useState<{id: string; text: string}[]>([])
   const [showModal, setShowModal] = useState(false)
+  const {data: session} = queries.useAuthStatus()
+  const userId = session?.userId
+  if(!userId){
+    return <Text>User not logged in</Text>
+  }
+  const {data} = queries.useGetTodos(userId)
+
 
   function addTask(text: string){
-    setTasks(prev => [...prev, {id: uuid.v4().toString(), text}])  
+      
   }
 
   function removeTask(id: string) {
-    setTasks(prev => prev.filter( task => task.id !== id))
+    
   }
 
-  function deleteAllTasks () {
-    setTasks([])
+
+  async function deleteAllTasks () {
+    const result = await db.insert(userTable).values([{ username: 'John', password: 'John1' }])
+    console.log(result)
   }
 
   return (
     <View style={styles.todoContainer}>
       <Text style={styles.title}>Todo list</Text>
-      <FlatList style={styles.flatList} data={tasks} keyExtractor={(item,) => item.id} renderItem={({item, index}) => 
-        <View style={styles.itemWrapper}>
-          <Text style={styles.taskItem}>{`${index + 1}. ${item.text}`}</Text>
-          <RemoveListItemButton onPress={() => removeTask(item.id)} />
-        </View>}/>
+      {data == null ? <Text style={styles.noTasks}>No tasks yet</Text> : 
+        <FlatList style={styles.flatList} data={data} keyExtractor={(item,) => item.id.toString()} renderItem={({item, index}) => 
+         <View style={styles.itemWrapper}>
+         <Text style={styles.taskItem}>{`${index + 1}. ${item.text}`}</Text>
+          <RemoveListItemButton onPress={() => removeTask(item.id.toString())} />
+       </View>}/>
+      }
       <View style={styles.dangerButtonWrapper}>
         <StandardButton title="Delete all" onPress={deleteAllTasks} isDanger/> 
       </View>
@@ -74,5 +87,11 @@ todoContainer: {
   dangerButtonWrapper: {
     paddingBottom: 30,
     paddingLeft: 15,
-  }
+  },
+  noTasks: {
+    marginTop: 100,
+    textAlign: 'center',
+    fontSize: 18,
+    color: 'gray',
+  },
 });

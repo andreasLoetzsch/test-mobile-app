@@ -1,57 +1,33 @@
-import AsyncStorage from "@react-native-async-storage/async-storage"
-
-
-export const logInUser = async (username: string, password: string) => {
-    try {
-        if(!username || !password){
-        throw new Error('Username and password required')
-    }
-    const stored = await AsyncStorage.getItem(`user:${username}`)
-    if(!stored){
-        throw new Error('user not found')
-    } 
-    const user = JSON.parse(stored)
-    if(user.password !== password){
-        throw new Error('Invalid credentials')
-    }
-    console.log({ user }, 'login')
-    return user
-    }catch(err){
-        console.error(err)
-        throw err
-    }
-    
-}
+import { userTable, session } from "@/schemas/schemas";
+import { db } from "@/utils/sqLiteConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { sql } from "drizzle-orm";
 
 export const registerUser = async (username: string, password: string) => {
-    if(!username || !password) {
-        throw new Error('Username and password required')
-    }
-    try{
-        const user = { username, password } 
-        await AsyncStorage.setItem(`user:${username}`, JSON.stringify(user))
-        await AsyncStorage.setItem('isLoggedIn', JSON.stringify(true))
-        return user
-    }catch(err){
-        console.error(err)
-        throw err
-    }
+  const [createdUser] = await db.insert(userTable).values({username, password}).returning()
+  const newUser = await db.insert(session).values({userId: createdUser.id, username: createdUser.username}).returning()
+  return newUser
+};
+
+export const logInUser = async (username: string, password: string,) => {
+  const users = await db.select().from(userTable).where(sql`${userTable.username} == ${username}`)
+  const user = users[0]
+  if(!user){
+    throw new Error("User not found")
+  }
+  if(user.password !== password){
+    throw new Error("Invalid credentials")
+  }
+  await db.insert(session).values({userId: user.id, username: user.username })
+  return user
 }
 
 export const isUserLoggedIn = async () => {
-    try{
-        const loggedInStatus = await AsyncStorage.getItem('isLoggedIn')
-        if(!loggedInStatus){
-            throw new Error('couldnt find isLoggedIn')
-        }
-        const loggedInStatusParsed = JSON.parse(loggedInStatus)
-        console.log(loggedInStatusParsed, 'in user. is logged in')
-        if(loggedInStatusParsed == false){
-            throw new Error('User not logged in')
-        }
-        return loggedInStatusParsed
-    }catch(err){
-        console.error(err)
-        throw err
-    }
+  const isLoggedIn = await db.select().from(session).limit(1)
+  return isLoggedIn[0] ?? null;
+};
+
+export const deleteUser = async (userId: number) => {
+  await db.delete(session);
+  await db.delete(userTable).where(sql`${userTable.id} == ${userId}`);
 }
