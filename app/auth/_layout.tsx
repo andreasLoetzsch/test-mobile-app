@@ -6,7 +6,6 @@ export default function AuthLayout() {
   const { data: isLoggedIn = null } = queries.useAuthStatus();
 
   useEffect(() => {
-    console.log({ isLoggedIn });
     if (isLoggedIn === null) return;
     if (isLoggedIn) router.replace("/(tabs)");
   }, [isLoggedIn]);
