@@ -1,7 +1,8 @@
-import { userTable, session } from "@/schemas/schemas";
+import { userTable, session, todoTable } from "@/schemas/schemas";
 import { db } from "@/utils/sqLiteConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { sql } from "drizzle-orm";
+import { persister, queryClient } from "@/utils/queryClient";
+import { clearAuth } from "@/utils/auth";
+import { eq, sql } from "drizzle-orm";
 
 export const registerUser = async (username: string, password: string) => {
   const [createdUser] = await db.insert(userTable).values({username, password}).returning()
@@ -28,6 +29,8 @@ export const isUserLoggedIn = async () => {
 };
 
 export const deleteUser = async (userId: number) => {
-  await db.delete(session);
-  await db.delete(userTable).where(sql`${userTable.id} == ${userId}`);
+  clearAuth()
+  await db.delete(todoTable).where(eq(todoTable.createdBy, userId));
+  await db.delete(userTable).where(eq(userTable.id, userId));
+  return;
 }

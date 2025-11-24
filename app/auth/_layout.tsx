@@ -3,12 +3,11 @@ import { router, Stack } from "expo-router";
 import { useEffect } from "react";
 
 export default function AuthLayout() {
-  const { data: isLoggedIn = null } = queries.useAuthStatus();
+  const { data: session = null } = queries.useAuthStatus();
 
   useEffect(() => {
-    if (isLoggedIn === null) return;
-    if (isLoggedIn) router.replace("/(tabs)");
-  }, [isLoggedIn]);
+    if (session && session.userId) router.replace("/(tabs)");
+  }, [session]);
 
   return (
     <Stack

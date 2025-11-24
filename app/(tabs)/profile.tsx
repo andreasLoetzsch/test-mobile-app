@@ -1,11 +1,9 @@
 import { StandardButton } from "@/components/buttons"
-import { logout } from '@/utils/auth'
-import { useRouter } from "expo-router"
+import { clearAuth } from '@/utils/auth'
 import { StyleSheet, Text, View } from "react-native"
 import { queries } from "@/hooks/quries"
 
 export default function profileScreen () {
-    const router = useRouter()
     const {data: session} = queries.useAuthStatus()
     const {mutate} = queries.useDeleteAuth()
     const handleDeleteAccount = (userId?: number | null) => {
@@ -15,7 +13,7 @@ export default function profileScreen () {
     return (
     <View style={styles.profileContainer}>
         <Text>Profile</Text>
-        <StandardButton title={'logout'} onPress={()=>logout(router)} isDanger/>
+        <StandardButton title={'logout'} onPress={()=>clearAuth} isDanger/>
         <StandardButton title={'Delete account'} onPress={()=>handleDeleteAccount(session?.userId)} isDanger/>
     </View>
 )

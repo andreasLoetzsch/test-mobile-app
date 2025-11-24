@@ -3,17 +3,17 @@ import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { queries } from "@/hooks/quries";
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { db } from "@/utils/sqLiteConfig";
 import { router, Tabs } from "expo-router";
 import React, { useEffect } from "react";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const { data: isLoggedIn} = queries.useAuthStatus();
+  const { data: session} = queries.useAuthStatus();
+  console.log(session, "kolla användare")
   useEffect(() => {
-    if (!isLoggedIn) router.replace("/auth/login");
-  }, [isLoggedIn]);
-
+    console.log("hej",session)
+    if (session && !session.userId || !session) router.replace("/auth/login");
+  }, [session]);
 
   return (
     <Tabs

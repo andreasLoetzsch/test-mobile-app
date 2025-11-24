@@ -9,10 +9,8 @@ export default function ToDoScreen() {
   const [showModal, setShowModal] = useState(false)
   const {data: session} = queries.useAuthStatus()
   const {mutate: createMutate} = queries.useCreateTodo()
-  const userId = session?.userId
-  if(!userId){
-    return <Text>User not logged in</Text>
-  }
+  const userId = session?.userId || undefined
+  
   const {mutate: deleteMutate} = queries.useDeleteTodo(userId)
   const {mutate: deleteAllMutate} = queries.useDeleteAllTodo()
   const {data: todos} = queries.useGetTodos(userId)
@@ -31,6 +29,10 @@ export default function ToDoScreen() {
  function deleteAllTasks (userId: number) {
     if(!userId) return
     deleteAllMutate(userId)
+  }
+
+  if(!userId){
+    return <Text>User not logged in</Text>
   }
 
   return (

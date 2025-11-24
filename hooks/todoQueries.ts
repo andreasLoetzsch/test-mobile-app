@@ -25,7 +25,7 @@ const useCreateTodo = () => {
     })
 }
 
-const useDeleteTodo = (userId: number) => {
+const useDeleteTodo = (userId?: number) => {
     return useMutation({
         mutationFn: async (id: number) => {
             return await deleteTodoItem(id)

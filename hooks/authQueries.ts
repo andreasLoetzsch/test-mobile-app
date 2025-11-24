@@ -1,10 +1,7 @@
-import { session } from "@/schemas/schemas";
 import { isUserLoggedIn, registerUser, logInUser, deleteUser } from "@/services/authService";
 import { queryClient } from "@/utils/queryClient";
-import { db } from "@/utils/sqLiteConfig";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { AsyncStorage } from "@tanstack/react-query-persist-client";
-import { useRouter } from "expo-router";
+
 
 const useAuth = () => {
   return useMutation({
