@@ -13,7 +13,7 @@ export default function profileScreen () {
     return (
     <View style={styles.profileContainer}>
         <Text>Profile</Text>
-        <StandardButton title={'logout'} onPress={()=>clearAuth} isDanger/>
+        <StandardButton title={'logout'} onPress={()=>clearAuth()} isDanger/>
         <StandardButton title={'Delete account'} onPress={()=>handleDeleteAccount(session?.userId)} isDanger/>
     </View>
 )
